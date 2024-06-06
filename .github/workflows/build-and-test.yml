@@ -73,7 +73,7 @@ jobs:
       actions: read
   uploadcoveragereport:
     name: Upload Coverage Report
-    needs: [packageios, packagewatchos, packagevisionos, packagetvos, packagemacos, ios, ipados, watchos, visionos, tvos]
+    needs: [packageios, packagewatchos, packagevisionos, packagetvos, packagemacos]
     uses: StanfordSpezi/.github/.github/workflows/create-and-upload-coverage-report.yml@v2
     with:
       coveragereports: SpeziNetworking-iOS.xcresult SpeziNetworking-watchOS.xcresult SpeziNetworking-visionOS.xcresult SpeziNetworking-tvOS.xcresult SpeziNetworking-macOS.xcresult
