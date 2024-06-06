@@ -14,11 +14,11 @@ import PackageDescription
 let package = Package(
     name: "SpeziNetworking",
     platforms: [
-        .iOS(.v17),
-        .watchOS(.v10),
+        .iOS(.v16),
+        .watchOS(.v9),
         .visionOS(.v1),
-        .tvOS(.v17),
-        .macOS(.v14)
+        .macOS(.v13),
+        .tvOS(.v16)
     ],
     products: [
         .library(name: "ByteCoding", targets: ["ByteCoding"]),
