@@ -14,8 +14,7 @@ SPDX-License-Identifier: MIT
 [![codecov](https://codecov.io/gh/StanfordSpezi/SpeziNetworking/graph/badge.svg?token=emNLUokqWO)](https://codecov.io/gh/StanfordSpezi/SpeziNetworking)
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FStanfordSpezi%2FSpeziNetworking%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/StanfordSpezi/SpeziNetworking)
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FStanfordSpezi%2FSpeziNetworking%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/StanfordSpezi/SpeziNetworking)
-
-
+[![DOI](https://zenodo.org/badge/811321013.svg)](https://zenodo.org/doi/10.5281/zenodo.11508061)
 A collection of networking-related infrastructure to support Spezi applications.
 
 ## Overview
