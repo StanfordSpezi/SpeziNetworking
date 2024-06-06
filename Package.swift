@@ -22,12 +22,12 @@ let package = Package(
     ],
     products: [
         .library(name: "ByteCoding", targets: ["ByteCoding"]),
-        .library(name: "XCTByteCoding", targets: ["XCTByteCoding"])
+        .library(name: "XCTByteCoding", targets: ["XCTByteCoding"]),
+        .library(name: "SpeziNumerics", targets: ["SpeziNumerics"])
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-nio.git", from: "2.59.0")
     ],
-    // TODO: adjust final target list in .spi.yml
     targets: [
         .target(
             name: "ByteCoding",
@@ -43,15 +43,24 @@ let package = Package(
             ]
         ),
         .target(
-            name: "SpeziNumerics"
-        ),
-        .target(
-            name: "MedFloat"
+            name: "SpeziNumerics",
+            dependencies: [
+                .target(name: "ByteCoding"),
+                .product(name: "NIO", package: "swift-nio")
+            ]
         ),
         .testTarget(
             name: "ByteCodingTests",
             dependencies: [
                 .target(name: "ByteCoding"),
+                .target(name: "XCTByteCoding")
+            ]
+        ),
+        .testTarget(
+            name: "SpeziNumericsTests",
+            dependencies: [
+                .target(name: "ByteCoding"),
+                .target(name: "SpeziNumerics"),
                 .target(name: "XCTByteCoding")
             ]
         )
