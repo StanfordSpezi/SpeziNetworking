@@ -13,8 +13,8 @@ authors:
   given-names: "Paul"
   orcid: "https://orcid.org/0000-0002-8607-9148"
 - family-names: "Bauer"
-given-names: "Andreas"
-orcid: "https://orcid.org/0000-0002-1680-237X"
+  given-names: "Andreas"
+  orcid: "https://orcid.org/0000-0002-1680-237X"
 title: "SpeziNetworking"
 doi: 10.5281/zenodo.11508061
 url: "https://github.com/StanfordSpezi/SpeziNetworking"
