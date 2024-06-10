@@ -26,14 +26,20 @@ SpeziNetworking provides easy to use infrastructure in networking applications.
 The `ByteCoding` package provides the necessary infrastructure to make encoding and decoding of a type to or from its
 respective binary representation easy to use.
 
+|                                                         Type                                                          | Description                                                           |
+|:---------------------------------------------------------------------------------------------------------------------:|-----------------------------------------------------------------------|
+|   [`ByteCodable`](https://swiftpackageindex.com/stanfordspezi/spezinetworking/documentation/bytecoding/bytecodable)   | A type that is encodable to and decodable from a byte representation. |
+| [`ByteEncodable`](https://swiftpackageindex.com/stanfordspezi/spezinetworking/documentation/bytecoding/byteencodable) | A type that is decodable to a byte representation.                    |
+| [`ByteDecodable`](https://swiftpackageindex.com/stanfordspezi/spezinetworking/documentation/bytecoding/bytedecodable) | A type that is decodable from a byte representation.                  |
+
 ### SpeziNumerics
 
 Implementation of numeric types that are not supported out of the box in the standard library or are only found in networking protocols.
 
-|                                                                      Type                                                                      | Description                                                  |
-|:----------------------------------------------------------------------------------------------------------------------------------------------:|--------------------------------------------------------------|
-|                [MedFloat16](https://swiftpackageindex.com/stanfordspezi/spezinetworking/documentation/spezinumerics/medfloat16)                | Medical 16-bit float using base 10                           |
-|  [Int24/UInt24 Support](https://swiftpackageindex.com/stanfordspezi/spezinetworking/1.0.0/documentation/spezinumerics#24-bit-integer-support)  | Support reading and writing Int24 and UInt24 with ByteBuffer |
+|                                                                  Type                                                                  | Description                                                  |
+|:--------------------------------------------------------------------------------------------------------------------------------------:|--------------------------------------------------------------|
+|           [`MedFloat16`](https://swiftpackageindex.com/stanfordspezi/spezinetworking/documentation/spezinumerics/medfloat16)           | Medical 16-bit float using base 10                           |
+| [Int24/UInt24 Support](https://swiftpackageindex.com/stanfordspezi/spezinetworking/documentation/spezinumerics#24-bit-integer-support) | Support reading and writing Int24 and UInt24 with ByteBuffer |
 
 ## Setup
 
