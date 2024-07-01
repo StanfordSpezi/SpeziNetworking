@@ -14,11 +14,11 @@ import PackageDescription
 let package = Package(
     name: "SpeziNetworking",
     platforms: [
-        .iOS(.v16),
-        .watchOS(.v9),
+        .iOS(.v17),
+        .watchOS(.v10),
         .visionOS(.v1),
-        .macOS(.v13),
-        .tvOS(.v16)
+        .macOS(.v14),
+        .tvOS(.v17)
     ],
     products: [
         .library(name: "ByteCoding", targets: ["ByteCoding"]),
@@ -26,12 +26,14 @@ let package = Package(
         .library(name: "SpeziNumerics", targets: ["SpeziNumerics"])
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-nio.git", from: "2.59.0")
+        .package(url: "https://github.com/apple/swift-nio.git", from: "2.59.0"),
+        .package(url: "git@github.com:StanfordSpezi/SpeziFoundation.git", from: "1.0.4")
     ],
     targets: [
         .target(
             name: "ByteCoding",
             dependencies: [
+                .product(name: "SpeziFoundation", package: "SpeziFoundation"),
                 .product(name: "NIO", package: "swift-nio"),
                 .product(name: "NIOFoundationCompat", package: "swift-nio")
             ]
