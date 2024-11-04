@@ -1,4 +1,4 @@
-// swift-tools-version:5.9
+// swift-tools-version:6.0
 
 //
 // This source file is part of the Stanford Spezi open-source project
@@ -10,12 +10,6 @@
 
 import class Foundation.ProcessInfo
 import PackageDescription
-
-#if swift(<6)
-let swiftConcurrency: SwiftSetting = .enableExperimentalFeature("StrictConcurrency")
-#else
-let swiftConcurrency: SwiftSetting = .enableUpcomingFeature("StrictConcurrency")
-#endif
 
 
 let package = Package(
@@ -42,18 +36,12 @@ let package = Package(
                 .product(name: "NIO", package: "swift-nio"),
                 .product(name: "NIOFoundationCompat", package: "swift-nio")
             ],
-            swiftSettings: [
-                swiftConcurrency
-            ],
             plugins: [] + swiftLintPlugin()
         ),
         .target(
             name: "XCTByteCoding",
             dependencies: [
                 .target(name: "ByteCoding")
-            ],
-            swiftSettings: [
-                swiftConcurrency
             ],
             plugins: [] + swiftLintPlugin()
         ),
@@ -63,9 +51,6 @@ let package = Package(
                 .target(name: "ByteCoding"),
                 .product(name: "NIO", package: "swift-nio")
             ],
-            swiftSettings: [
-                swiftConcurrency
-            ],
             plugins: [] + swiftLintPlugin()
         ),
         .testTarget(
@@ -73,9 +58,6 @@ let package = Package(
             dependencies: [
                 .target(name: "ByteCoding"),
                 .target(name: "XCTByteCoding")
-            ],
-            swiftSettings: [
-                swiftConcurrency
             ],
             plugins: [] + swiftLintPlugin()
         ),
@@ -85,9 +67,6 @@ let package = Package(
                 .target(name: "ByteCoding"),
                 .target(name: "SpeziNumerics"),
                 .target(name: "XCTByteCoding")
-            ],
-            swiftSettings: [
-                swiftConcurrency
             ],
             plugins: [] + swiftLintPlugin()
         )
