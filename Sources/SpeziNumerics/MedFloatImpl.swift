@@ -16,9 +16,7 @@ import NIOCore
 extension FixedWidthInteger {
     /// Constructs a value with the lowest `numBits` bits set to `1`, and everything else set to `0`.
     static func bitmask(_ numBits: Int) -> Self {
-        let retval = ((1 as Self) << numBits) - (1 as Self)
-        assert(retval.nonzeroBitCount == numBits)
-        return retval
+        (1 << numBits) - 1
     }
 }
 
