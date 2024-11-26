@@ -314,14 +314,18 @@ final class MedFloatTests: XCTestCase { // swiftlint:disable:this type_body_leng
         print(MedFloat16(150000000000).debugDescription)
     }
 
+    
     func testExactlyConversion() {
+        XCTAssertNil(MedFloat16(exactly: Int16.max))
+        XCTAssertNil(MedFloat16(exactly: UInt16.max))
+        XCTAssertNotNil(MedFloat32(exactly: Int16.max))
+        XCTAssertNotNil(MedFloat32(exactly: UInt16.max))
+        
         func imp<MedFloat: MedFloatProtocol>(_: MedFloat.Type) {
             XCTAssertEqual(MedFloat(exactly: UInt8.max), 255)
             XCTAssertEqual(MedFloat(exactly: Int8.max), 127)
             XCTAssertEqual(MedFloat(exactly: 12400), 12400)
             
-            XCTAssertNil(MedFloat(exactly: Int16.max))
-            XCTAssertNil(MedFloat(exactly: UInt16.max))
             XCTAssertNil(MedFloat(exactly: Int32.max))
             XCTAssertNil(MedFloat(exactly: UInt32.max))
             XCTAssertNil(MedFloat(exactly: Int64.max))
