@@ -451,7 +451,7 @@ extension MedFloatProtocol {
             return false // ensure there aren't any more words that contain ones
         }
         // check that the exponent bytes and the most significant mantissa bit is zero of second word.
-        return first & (UInt.max << 11) == 0
+        return first & (UInt.max << (Self.mantissaBitWidth - 1)) == 0
     }
 
     public static func + (lhs: Self, rhs: Self) -> Self { // swiftlint:disable:this missing_docs
