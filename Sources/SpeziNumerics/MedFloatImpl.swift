@@ -13,54 +13,13 @@ import Foundation
 import NIOCore
 
 
-extension FixedWidthInteger {
-    /// Constructs a value with the lowest `numBits` bits set to `1`, and everything else set to `0`.
-    static func bitmask(_ numBits: Int) -> Self {
-        (1 << numBits) - 1
-    }
-}
-
-
-public protocol _UnsignedInteger: UnsignedInteger { // swiftlint:disable:this type_name
-    associatedtype _Signed: _SignedInteger where _Signed._Unsigned == Self // swiftlint:disable:this type_name
-    init(bitPattern: _Signed)
-}
-
-public protocol _SignedInteger: SignedInteger { // swiftlint:disable:this type_name
-    associatedtype _Unsigned: _UnsignedInteger where _Unsigned._Signed == Self // swiftlint:disable:this type_name
-    init(bitPattern: _Unsigned)
-}
-
-
-extension Int8: _SignedInteger {
-    public typealias _Unsigned = UInt8 // swiftlint:disable:this type_name
-}
-extension UInt8: _UnsignedInteger {
-    public typealias _Signed = Int8 // swiftlint:disable:this type_name
-}
-
-extension Int16: _SignedInteger {
-    public typealias _Unsigned = UInt16 // swiftlint:disable:this type_name
-}
-extension UInt16: _UnsignedInteger {
-    public typealias _Signed = Int16 // swiftlint:disable:this type_name
-}
-
-extension Int32: _SignedInteger {
-    public typealias _Unsigned = UInt32 // swiftlint:disable:this type_name
-}
-extension UInt32: _UnsignedInteger {
-    public typealias _Signed = Int32 // swiftlint:disable:this type_name
-}
-
-
 /// Medical floating point value representation using base 10.
 ///
 /// This protocol implements MedFloat operations, abstracted over the MedFloat's exponent and mantissa sizes.
 ///
 /// The value of a MedFloat can be calculated using the the following formula, where `**` denotes exponentiation:
 ///
-///         x.mantissa * (10 ** x.exponent)
+///     x.mantissa * (10 ** x.exponent)
 public protocol MedFloatProtocol: SignedNumeric, Hashable, Comparable,
                                   CustomStringConvertible, CustomDebugStringConvertible,
                                   RawRepresentable, PrimitiveByteCodable, Codable, Sendable,
@@ -106,6 +65,7 @@ extension MedFloatProtocol {
         }
         return Exponent(bitPattern: exponentBitPattern)
     }
+    
     
     /// The signed mantissa, in two's complement.
     ///
@@ -698,20 +658,20 @@ extension MedFloatProtocol {
     
     /// Maximum value in Double representation for a MedFloat.
     ///
-    ///     (2 ** (mantissaWidth-1) - 3) * 10 ** maxExponent
+    /// `(2 ** (mantissaWidth-1) - 3) * 10 ** maxExponent`
     static var maxDoubleValue: Double {
         (pow(2 as Double, Double(Self.mantissaBitWidth) - 1) - 3) * pow(10 as Double, Double(Self.exponentMaxValue))
     }
     
     /// Minimum value in Double representation for a MedFloat.
     ///
-    ///     -(2 ** (mantissaWidth-1) - 3) * 10 ** maxExponent
-    ///     -maxDoubleValue
+    /// `-(2 ** (mantissaWidth-1) - 3) * 10 ** maxExponent`
+    /// `-maxDoubleValue`
     static var minDoubleValue: Double { -maxDoubleValue }
     
     /// The minimum precision of a MedFloat.
     ///
-    ///     10 ** -bias
+    /// `10 ** -bias`
     static var epsilon: Double {
         pow(10 as Double, Double(-(BitPattern.bitWidth / 2)))
     }
@@ -720,6 +680,55 @@ extension MedFloatProtocol {
     static var precision: Double {
         pow(10 as Double, ceil(Double(Self.mantissaBitWidth) * log(2) / log(10)))
     }
+}
+
+
+// MARK: Internal Helpers and Utilities
+
+extension FixedWidthInteger {
+    /// Constructs a value with the lowest `numBits` bits set to `1`, and everything else set to `0`.
+    static func bitmask(_ numBits: Int) -> Self {
+        (1 << numBits) - 1
+    }
+}
+
+
+/// Helper protocol used for associating an `UnsignedInteger` type with its `SignedInteger` counterpart.
+/// This is required for us to be able to implement the `MedFloatProtocol`,
+/// and for the protocol to have access to the `init(bitPattern:)` initializers.
+public protocol _UnsignedInteger: UnsignedInteger { // swiftlint:disable:this type_name
+    associatedtype _Signed: _SignedInteger where _Signed._Unsigned == Self // swiftlint:disable:this type_name
+    init(bitPattern: _Signed)
+}
+
+/// Helper protocol used for associating a `SignedInteger` type with its `UnsignedInteger` counterpart.
+/// This is required for us to be able to implement the `MedFloatProtocol`,
+/// and for the protocol to have access to the `init(bitPattern:)` initializers.
+public protocol _SignedInteger: SignedInteger { // swiftlint:disable:this type_name
+    associatedtype _Unsigned: _UnsignedInteger where _Unsigned._Signed == Self // swiftlint:disable:this type_name
+    init(bitPattern: _Unsigned)
+}
+
+
+extension Int8: _SignedInteger {
+    public typealias _Unsigned = UInt8 // swiftlint:disable:this type_name
+}
+extension UInt8: _UnsignedInteger {
+    public typealias _Signed = Int8 // swiftlint:disable:this type_name
+}
+
+extension Int16: _SignedInteger {
+    public typealias _Unsigned = UInt16 // swiftlint:disable:this type_name
+}
+extension UInt16: _UnsignedInteger {
+    public typealias _Signed = Int16 // swiftlint:disable:this type_name
+}
+
+extension Int32: _SignedInteger {
+    public typealias _Unsigned = UInt32 // swiftlint:disable:this type_name
+}
+extension UInt32: _UnsignedInteger {
+    public typealias _Signed = Int32 // swiftlint:disable:this type_name
 }
 
 // swiftlint:enable file_length
