@@ -253,6 +253,7 @@ extension MedFloatProtocol {
     public var double: Double {
         // For some reason writing e.g. `Self.nan.bitPattern` in a switch case causes the compiler to reject the code, saying that
         // "'nan' is not a member type of type 'Self'". Writing `type(of: self).nan.bitPattern` instead compiles.
+        // (See also https://github.com/swiftlang/swift/issues/77849.)
         // swiftlint:disable prefer_self_type_over_type_of_self
         switch bitPattern {
         case type(of: self).nan.bitPattern, type(of: self).nres.bitPattern, type(of: self).reserved0.bitPattern:
