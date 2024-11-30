@@ -296,7 +296,7 @@ extension MedFloatProtocol {
                 exponent += 1
 
                 if exponent > Self.exponentMaxValue {
-                    preconditionFailure("Precondition check didn't properly check for infinity, medfloat16 from double \(other)")
+                    preconditionFailure("Precondition check didn't properly check for infinity, \(Self.self) from double \(other)")
                 }
             }
 
@@ -306,7 +306,7 @@ extension MedFloatProtocol {
                 exponent -= 1
 
                 if exponent < Self.exponentMinValue {
-                    preconditionFailure("Precondition check didn't properly check for epsilon, medfloat16 from double \(other)")
+                    preconditionFailure("Precondition check didn't properly check for epsilon, \(Self.self) from double \(other)")
                 }
             }
 
