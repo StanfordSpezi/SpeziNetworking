@@ -20,6 +20,9 @@ import NIOCore
 /// The value of a MedFloat can be calculated using the the following formula, where `**` denotes exponentiation:
 ///
 ///     x.mantissa * (10 ** x.exponent)
+///
+/// - Note: Any type declaring conformance to this protocol must implement ``BitPattern``, ``Exponent``, ``Mantissa``, ``exponentBitWidth``, and ``mantissaBitWidth``
+///     in a way that results in a valid layout w.r.t. the structure of and operations on MedFloat types.
 public protocol MedFloatProtocol: SignedNumeric, Hashable, Comparable,
                                   CustomStringConvertible, CustomDebugStringConvertible,
                                   RawRepresentable, PrimitiveByteCodable, Codable, Sendable,

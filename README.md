@@ -40,6 +40,7 @@ Implementation of numeric types that are not supported out of the box in the sta
 |                                                                  Type                                                                  | Description                                                  |
 |:--------------------------------------------------------------------------------------------------------------------------------------:|--------------------------------------------------------------|
 |           [`MedFloat16`](https://swiftpackageindex.com/stanfordspezi/spezinetworking/documentation/spezinumerics/medfloat16)           | Medical 16-bit float using base 10                           |
+|           [`MedFloat32`](https://swiftpackageindex.com/stanfordspezi/spezinetworking/documentation/spezinumerics/medfloat32)           | Medical 32-bit float using base 10                           |
 | [Int24/UInt24 Support](https://swiftpackageindex.com/stanfordspezi/spezinetworking/documentation/spezinumerics#24-bit-integer-support) | Support reading and writing Int24 and UInt24 with ByteBuffer |
 
 ## Setup
