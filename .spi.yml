@@ -13,4 +13,5 @@ builder:
       documentation_targets:
       - ByteCoding
       - SpeziNumerics
+      - ByteCodingTesting
       - XCTByteCoding
