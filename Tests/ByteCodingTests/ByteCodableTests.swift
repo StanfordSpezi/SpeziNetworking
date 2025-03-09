@@ -79,7 +79,8 @@ struct ByteCodableTests {
         try testIdentity(of: String.self, from: data)
 
         var empty = ByteBuffer()
-        #expect(String(from: &empty)?.isEmpty)
+        let string = try #require(String(from: &empty))
+        #expect(string.isEmpty)
     }
 
     @Test("Int8")
