@@ -23,18 +23,35 @@ let package = Package(
     ],
     products: [
         .library(name: "ByteCoding", targets: ["ByteCoding"]),
+        .library(name: "SpeziNumerics", targets: ["SpeziNumerics"]),
         .library(name: "XCTByteCoding", targets: ["XCTByteCoding"]),
-        .library(name: "SpeziNumerics", targets: ["SpeziNumerics"])
+        .library(name: "ByteCodingTesting", targets: ["ByteCodingTesting"])
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-nio.git", from: "2.59.0")
+        .package(url: "https://github.com/apple/swift-nio.git", from: "2.59.0"),
+        .package(url: "https://github.com/apple/swift-numerics.git", from: "1.0.3")
     ] + swiftLintPackage(),
     targets: [
         .target(
             name: "ByteCoding",
             dependencies: [
-                .product(name: "NIO", package: "swift-nio"),
+                .product(name: "NIOCore", package: "swift-nio"),
                 .product(name: "NIOFoundationCompat", package: "swift-nio")
+            ],
+            plugins: [] + swiftLintPlugin()
+        ),
+        .target(
+            name: "SpeziNumerics",
+            dependencies: [
+                .target(name: "ByteCoding"),
+                .product(name: "NIOCore", package: "swift-nio")
+            ],
+            plugins: [] + swiftLintPlugin()
+        ),
+        .target(
+            name: "ByteCodingTesting",
+            dependencies: [
+                .target(name: "ByteCoding")
             ],
             plugins: [] + swiftLintPlugin()
         ),
@@ -45,19 +62,11 @@ let package = Package(
             ],
             plugins: [] + swiftLintPlugin()
         ),
-        .target(
-            name: "SpeziNumerics",
-            dependencies: [
-                .target(name: "ByteCoding"),
-                .product(name: "NIO", package: "swift-nio")
-            ],
-            plugins: [] + swiftLintPlugin()
-        ),
         .testTarget(
             name: "ByteCodingTests",
             dependencies: [
                 .target(name: "ByteCoding"),
-                .target(name: "XCTByteCoding")
+                .target(name: "ByteCodingTesting")
             ],
             plugins: [] + swiftLintPlugin()
         ),
@@ -66,7 +75,8 @@ let package = Package(
             dependencies: [
                 .target(name: "ByteCoding"),
                 .target(name: "SpeziNumerics"),
-                .target(name: "XCTByteCoding")
+                .target(name: "ByteCodingTesting"),
+                .product(name: "RealModule", package: "swift-numerics")
             ],
             plugins: [] + swiftLintPlugin()
         )
