@@ -20,6 +20,9 @@ import NIOCore
 /// The value of a MedFloat can be calculated using the the following formula, where `**` denotes exponentiation:
 ///
 ///     x.mantissa * (10 ** x.exponent)
+///
+/// ## Topics
+/// ### Initializers
 @available(iOS 26, macOS 26, macCatalyst 26, watchOS 26, visionOS 26, tvOS 26, *)
 public struct MedFloat<
     BitPattern, Exponent, Mantissa,
@@ -39,10 +42,10 @@ where BitPattern: FixedWidthInteger & _UnsignedInteger & PrimitiveByteCodable & 
     
     /// The size of the MedFloat's exponent, in bit.
     /// - Note: This value must compare less than or equal to the bit width of the ``Exponent`` type.
-    public static var exponentBitWidth: Int { exponentBitWidth }
+    @inlinable public static var exponentBitWidth: Int { exponentBitWidth }
     /// The size of the MedFloat's mantissa, in bit.
     /// - Note: This value must compare less than or equal to the bit width of the ``Mantissa`` type.
-    public static var mantissaBitWidth: Int { mantissaBitWidth }
+    @inlinable public static var mantissaBitWidth: Int { mantissaBitWidth }
     
     /// The MedFloat's underlying bit pattern.
     public private(set) var bitPattern: BitPattern
@@ -130,7 +133,7 @@ extension MedFloat {
 @available(iOS 26, macOS 26, macCatalyst 26, watchOS 26, visionOS 26, tvOS 26, *)
 extension MedFloat {
     /// The zero value.
-    public static var zero: Self {
+    @inlinable public static var zero: Self {
         Self(bitPattern: 0)
     }
     
@@ -138,17 +141,17 @@ extension MedFloat {
     ///
     /// Indicates a invalid result form a computation step or to indicate missing data due to the hardware's inability to provide a valid measurement.
     /// Visual components should reflect this information by blanking the display or some other appropriate means.
-    public static var nan: Self {
+    @inlinable public static var nan: Self {
         Self(bitPattern: (1 << (Self.mantissaBitWidth - 1)) - 1)
     }
     
     /// Positive infinity.
-    public static var infinity: Self {
+    @inlinable public static var infinity: Self {
         Self(bitPattern: (1 << (Self.mantissaBitWidth - 1)) - 2)
     }
     
     /// Negative infinity.
-    public static var negativeInfinity: Self {
+    @inlinable public static var negativeInfinity: Self {
         let mantissa: Mantissa = -((1 << (Self.mantissaBitWidth - 1)) - 2)
         let bitPattern = BitPattern(truncatingIfNeeded: mantissa) & .bitmask(Self.mantissaBitWidth)
         return Self(bitPattern: bitPattern)
@@ -157,7 +160,7 @@ extension MedFloat {
     /// Special value indicating that a value cannot be represented with the available range or resolution.
     ///
     /// This situation could result from an overflow or underflow situation.
-    public static var nres: Self {
+    @inlinable public static var nres: Self {
         Self(bitPattern: 1 << (Self.mantissaBitWidth - 1))
     }
     
@@ -173,14 +176,14 @@ extension MedFloat {
     /// Because NaN is not equal to any value, including NaN, use this property
     /// instead of the equal-to operator (`==`) or not-equal-to operator (`!=`)
     /// to test whether a value is or is not NaN.
-    public var isNaN: Bool {
+    @inlinable public var isNaN: Bool {
         bitPattern == Self.nan.bitPattern
     }
     
     /// Determine if float is zero.
     ///
     /// There are multiple representations of zero (all these, where the mantissa is set to zero, with an arbitrary combination of exponents).
-    public var isZero: Bool {
+    @inlinable public var isZero: Bool {
         mantissa == 0
     }
 
@@ -189,17 +192,17 @@ extension MedFloat {
     /// Because nRes is not equal to any value, including nRes, use this property
     /// instead of the equal-to operator (`==`) or not-equal-to operator (`!=`)
     /// to test whether a value is or is not nRes.
-    public var isNRes: Bool {
+    @inlinable public var isNRes: Bool {
         bitPattern == Self.nres.bitPattern
     }
 
     /// Reserved special value.
-    public var isReserved0: Bool {
+    @inlinable public var isReserved0: Bool {
         bitPattern == Self.reserved0.bitPattern
     }
 
     /// Any NaN-like value (NaN, NRes, reserved0).
-    public var isNaNLike: Bool {
+    @inlinable public var isNaNLike: Bool {
         isNaN || isNRes || isReserved0
     }
 
@@ -207,14 +210,14 @@ extension MedFloat {
     ///
     /// All values other than NaN, nRes and infinity are considered finite, whether
     /// normal or subnormal.  For NaN and nRes, both `isFinite` and ``isInfinite`` are false.
-    public var isFinite: Bool {
+    @inlinable public var isFinite: Bool {
         !isNaN && !isNRes && !isInfinite
     }
 
     /// A Boolean value indicating whether the instance is infinite.
     ///
     /// For NaN and nRes, both ``isFinite`` and `isInfinite` are false.
-    public var isInfinite: Bool {
+    @inlinable public var isInfinite: Bool {
         bitPattern == Self.infinity.bitPattern
             || bitPattern == Self.negativeInfinity.bitPattern
     }
@@ -222,7 +225,7 @@ extension MedFloat {
     /// The sign of the floating-point value.
     ///
     /// The sign is `minus` if the mantissa has a negative value and `plus` otherwise.
-    public var sign: FloatingPointSign {
+    @inlinable public var sign: FloatingPointSign {
         if mantissa < 0 {
             .minus
         } else {
@@ -245,12 +248,12 @@ extension MedFloat {
     }
 
     /// Replaces the value with its normalized version.
-    mutating func normalize() {
+    @inlinable mutating func normalize() {
         self = normalized()
     }
 
     /// Returns a MedFloat with the same value as the receiver, but with the exponent and mantissa normalized.
-    func normalized() -> Self {
+    @inlinable func normalized() -> Self {
         // The initializer will perform normalization.
         Self(exponent: exponent, mantissa: mantissa)
     }
@@ -410,12 +413,12 @@ extension MedFloat: ExpressibleByFloatLiteral, ExpressibleByIntegerLiteral {
     /// Creates an instance initialized to the specified floating-point value.
     ///
     /// - Parameter value: The value to create.
-    public init(floatLiteral value: Double) {
+    @inlinable public init(floatLiteral value: Double) {
         self.init(value)
     }
     
     /// Creates an instance initialized to the specified integer value.
-    public init(integerLiteral value: Int64) {
+    @inlinable public init(integerLiteral value: Int64) {
         let doubleValue = Double(value) // cheap route here
         self.init(doubleValue)
     }
@@ -469,34 +472,34 @@ extension MedFloat: Numeric, SignedNumeric, AdditiveArithmetic {
         return first & (UInt.max << (Self.mantissaBitWidth - 1)) == 0
     }
 
-    public static func + (lhs: Self, rhs: Self) -> Self {
+    @inlinable public static func + (lhs: Self, rhs: Self) -> Self {
         // We are going the cheap route here! There, is way too much to check for otherwise.
         Self(lhs.double + rhs.double)
     }
 
-    public static func - (lhs: Self, rhs: Self) -> Self {
+    @inlinable public static func - (lhs: Self, rhs: Self) -> Self {
         lhs + (-rhs)
     }
     
-    public static func * (lhs: Self, rhs: Self) -> Self {
+    @inlinable public static func * (lhs: Self, rhs: Self) -> Self {
         // We are going the cheap route here! There, is way too much to check for otherwise.
         Self(lhs.double * rhs.double)
     }
 
     
-    public static func *= (lhs: inout Self, rhs: Self) {
+    @inlinable public static func *= (lhs: inout Self, rhs: Self) {
         lhs = lhs * rhs
     }
     
     
-    public prefix static func - (operand: Self) -> Self {
+    @inlinable public prefix static func - (operand: Self) -> Self {
         var operand = operand
         operand.negate()
         return operand
     }
 
     
-    public mutating func negate() {
+    @inlinable public mutating func negate() {
         self = negated()
     }
     
@@ -628,7 +631,7 @@ extension MedFloat: RawRepresentable {
 @available(iOS 26, macOS 26, macCatalyst 26, watchOS 26, visionOS 26, tvOS 26, *)
 extension MedFloat {
     /// The minimum value the exponent may have.
-    static var exponentMinValue: Exponent {
+    @inlinable static var exponentMinValue: Exponent {
         if Self.exponentBitWidth == Exponent.bitWidth {
             // If the exponent uses the full width of its underlying type, the negation would overflow,
             // but we can instead simply return .min (which we can do bc of the fact that the sizes are equal).
@@ -639,46 +642,46 @@ extension MedFloat {
     }
     
     /// The maximum value the exponent may have.
-    static var exponentMaxValue: Exponent {
+    @inlinable static var exponentMaxValue: Exponent {
         Exponent(bitPattern: (1 << (Self.exponentBitWidth - 1)) - 1)
     }
     
     /// A bitmask intended for selecting the bits of an ``Exponent`` value that are actually used.
-    static var exponentUsedBitsMask: Exponent {
+    @inlinable static var exponentUsedBitsMask: Exponent {
         .bitmask(Self.exponentBitWidth)
     }
     
     /// The minimum value the mantissa may have.
-    static var mantissaMinValue: Mantissa {
+    @inlinable static var mantissaMinValue: Mantissa {
         -Mantissa(bitPattern: 1 << (Self.mantissaBitWidth - 1))
     }
     
     /// The maximum value the mantissa may have.
-    static var mantissaMaxValue: Mantissa {
+    @inlinable static var mantissaMaxValue: Mantissa {
         Mantissa(bitPattern: (1 << (Self.mantissaBitWidth - 1)) - 1)
     }
     
     /// A bitmask intended for selecting the bits of an ``Mantissa`` value that are actually used.
-    static var mantissaUsedBitsMask: Mantissa {
+    @inlinable static var mantissaUsedBitsMask: Mantissa {
         .bitmask(Self.mantissaBitWidth)
     }
     
     /// `2 ** (mantissaWidth - 1) - 3`
     /// `MedFloat.infinity - 1`
-    static var medFloatMantissaMax: Mantissa {
+    @inlinable static var medFloatMantissaMax: Mantissa {
         Self.infinity.mantissa - 1
     }
     
     /// `MedFloat.negativeInfinity + 1`
     /// `MedFloat.nres + 3`
-    static var medFloatMantissaMin: Mantissa {
+    @inlinable static var medFloatMantissaMin: Mantissa {
         Self.negativeInfinity.mantissa + 1
     }
     
     /// Maximum value in Double representation for a MedFloat.
     ///
     /// `(2 ** (mantissaWidth-1) - 3) * 10 ** maxExponent`
-    static var maxDoubleValue: Double {
+    @inlinable static var maxDoubleValue: Double {
         (pow(2 as Double, Double(Self.mantissaBitWidth) - 1) - 3) * pow(10 as Double, Double(Self.exponentMaxValue))
     }
     
@@ -686,17 +689,19 @@ extension MedFloat {
     ///
     /// `-(2 ** (mantissaWidth-1) - 3) * 10 ** maxExponent`
     /// `-maxDoubleValue`
-    static var minDoubleValue: Double { -maxDoubleValue }
+    @inlinable static var minDoubleValue: Double {
+        -maxDoubleValue
+    }
     
     /// The minimum precision of a MedFloat.
     ///
     /// `10 ** -bias`
-    static var epsilon: Double {
+    @inlinable static var epsilon: Double {
         pow(10 as Double, Double(-(BitPattern.bitWidth / 2)))
     }
     
     /// `10 ** upper((mantissaWidth-1) * log(2) / log(10))`
-    static var precision: Double {
+    @inlinable static var precision: Double {
         pow(10 as Double, ceil(Double(Self.mantissaBitWidth) * log(2) / log(10)))
     }
 }
@@ -706,6 +711,7 @@ extension MedFloat {
 
 extension FixedWidthInteger {
     /// Constructs a value with the lowest `numBits` bits set to `1`, and everything else set to `0`.
+    @inlinable @inline(__always)
     static func bitmask(_ numBits: Int) -> Self {
         (1 << numBits) - 1
     }
