@@ -6,7 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
-// swiftlint:disable file_length
+// swiftlint:disable file_length file_types_order generic_type_name
 
 import ByteCoding
 import Foundation
@@ -15,44 +15,48 @@ import NIOCore
 
 /// Medical floating point value representation using base 10.
 ///
-/// This protocol implements MedFloat operations, abstracted over the MedFloat's exponent and mantissa sizes.
+/// This type implements MedFloat operations, abstracted over the MedFloat's exponent and mantissa sizes.
 ///
 /// The value of a MedFloat can be calculated using the the following formula, where `**` denotes exponentiation:
 ///
 ///     x.mantissa * (10 ** x.exponent)
-///
-/// - Note: Any type declaring conformance to this protocol must implement ``BitPattern``, ``Exponent``, ``Mantissa``, ``exponentBitWidth``, and ``mantissaBitWidth``
-///     in a way that results in a valid layout w.r.t. the structure of and operations on MedFloat types.
-public protocol MedFloatProtocol: SignedNumeric, Hashable, Comparable,
-                                  CustomStringConvertible, CustomDebugStringConvertible,
-                                  RawRepresentable, PrimitiveByteCodable, Codable, Sendable,
-                                  ExpressibleByIntegerLiteral, ExpressibleByFloatLiteral {
+@available(iOS 26, macOS 26, macCatalyst 26, watchOS 26, visionOS 26, tvOS 26, *)
+public struct MedFloat<
+    BitPattern, Exponent, Mantissa,
+    let exponentBitWidth: Int, let mantissaBitWidth: Int
+>: Codable, Sendable
+where BitPattern: FixedWidthInteger & _UnsignedInteger & PrimitiveByteCodable & Codable & Sendable,
+      Exponent: FixedWidthInteger & _SignedInteger & Codable & Sendable,
+      Mantissa: FixedWidthInteger & _SignedInteger & Codable & Sendable {
     /// The MedFloat's underlying type.
     /// - Note: This type must be large enough to be able to store both the exponent as well as the mantissa,
     ///     i.e., it must hold that `MemoryLayout<BitPattern>.size * 8 >= Self.exponentBitWidth + Self.mantissaBitWidth`.
-    associatedtype BitPattern: FixedWidthInteger, _UnsignedInteger, PrimitiveByteCodable
+    public typealias BitPattern = BitPattern
     /// The type to be used for representing the MedFloat's exponent values.
-    associatedtype Exponent: FixedWidthInteger, _SignedInteger
+    public typealias Exponent = Exponent
     /// The type to be used for representing the MedFloat's mantissa values.
-    associatedtype Mantissa: FixedWidthInteger, _SignedInteger
+    public typealias Mantissa = Mantissa
     
     /// The size of the MedFloat's exponent, in bit.
     /// - Note: This value must compare less than or equal to the bit width of the ``Exponent`` type.
-    static var exponentBitWidth: Int { get }
+    public static var exponentBitWidth: Int { exponentBitWidth }
     /// The size of the MedFloat's mantissa, in bit.
     /// - Note: This value must compare less than or equal to the bit width of the ``Mantissa`` type.
-    static var mantissaBitWidth: Int { get }
+    public static var mantissaBitWidth: Int { mantissaBitWidth }
     
     /// The MedFloat's underlying bit pattern.
-    var bitPattern: BitPattern { get }
+    public private(set) var bitPattern: BitPattern
     
     /// Creates a new MedFloat value using the spexified bit pattern.
     /// - Note: No normalisation or other input validation is performed.
-    init(bitPattern: BitPattern)
+    public init(bitPattern: BitPattern) {
+        self.bitPattern = bitPattern
+    }
 }
 
 
-extension MedFloatProtocol {
+@available(iOS 26, macOS 26, macCatalyst 26, watchOS 26, visionOS 26, tvOS 26, *)
+extension MedFloat {
     /// The signed exponent, in two's complement.
     ///
     /// - Note: if the size of the MedFloat's exponent is smaller than the size of the `Exponent` type used to represent the exponent,
@@ -123,7 +127,8 @@ extension MedFloatProtocol {
 }
 
 
-extension MedFloatProtocol {
+@available(iOS 26, macOS 26, macCatalyst 26, watchOS 26, visionOS 26, tvOS 26, *)
+extension MedFloat {
     /// The zero value.
     public static var zero: Self {
         Self(bitPattern: 0)
@@ -227,7 +232,8 @@ extension MedFloatProtocol {
 }
 
 
-extension MedFloatProtocol {
+@available(iOS 26, macOS 26, macCatalyst 26, watchOS 26, visionOS 26, tvOS 26, *)
+extension MedFloat {
     private static func normalize(exponent: inout Exponent, mantissa: inout Mantissa) {
         while exponent > exponentMinValue,
               !mantissa.multipliedReportingOverflow(by: 10).overflow,
@@ -251,7 +257,8 @@ extension MedFloatProtocol {
 }
 
 
-extension MedFloatProtocol {
+@available(iOS 26, macOS 26, macCatalyst 26, watchOS 26, visionOS 26, tvOS 26, *)
+extension MedFloat {
     /// ``Double`` approximation of the medfloat.
     public var double: Double {
         // For some reason writing e.g. `Self.nan.bitPattern` in a switch case causes the compiler to reject the code, saying that
@@ -340,8 +347,9 @@ extension MedFloatProtocol {
 
 // MARK: Comparable
 
-extension MedFloatProtocol {
-    public static func < (lhs: Self, rhs: Self) -> Bool { // swiftlint:disable:this missing_docs
+@available(iOS 26, macOS 26, macCatalyst 26, watchOS 26, visionOS 26, tvOS 26, *)
+extension MedFloat: Comparable {
+    public static func < (lhs: Self, rhs: Self) -> Bool {
         if lhs.isNaNLike || rhs.isNaNLike {
             return false // any nan-like does never compare
         }
@@ -373,8 +381,9 @@ extension MedFloatProtocol {
 
 // MARK: Equatable, Hashable
 
-extension MedFloatProtocol {
-    public static func == (lhs: Self, rhs: Self) -> Bool { // swiftlint:disable:this missing_docs
+@available(iOS 26, macOS 26, macCatalyst 26, watchOS 26, visionOS 26, tvOS 26, *)
+extension MedFloat: Equatable, Hashable {
+    public static func == (lhs: Self, rhs: Self) -> Bool {
         if lhs.isNaNLike || rhs.isNaNLike {
             return false // any nan-like is never equal
         }
@@ -384,7 +393,7 @@ extension MedFloatProtocol {
         return lhs.normalized().bitPattern == rhs.normalized().bitPattern
     }
     
-    public func hash(into hasher: inout Hasher) { // swiftlint:disable:this missing_docs
+    public func hash(into hasher: inout Hasher) {
         if isZero {
             hasher.combine(Self.zero.bitPattern)
         } else {
@@ -396,7 +405,8 @@ extension MedFloatProtocol {
 
 // MARK: ExpressibleBy{Float,Integer}Literal
 
-extension MedFloatProtocol {
+@available(iOS 26, macOS 26, macCatalyst 26, watchOS 26, visionOS 26, tvOS 26, *)
+extension MedFloat: ExpressibleByFloatLiteral, ExpressibleByIntegerLiteral {
     /// Creates an instance initialized to the specified floating-point value.
     ///
     /// - Parameter value: The value to create.
@@ -414,8 +424,9 @@ extension MedFloatProtocol {
 
 // MARK: {Signed}Numeric, AdditiveArithmetic
 
-extension MedFloatProtocol {
-    public var magnitude: Self { // basically an abs function  // swiftlint:disable:this missing_docs
+@available(iOS 26, macOS 26, macCatalyst 26, watchOS 26, visionOS 26, tvOS 26, *)
+extension MedFloat: Numeric, SignedNumeric, AdditiveArithmetic {
+    public var magnitude: Self { // basically an abs function
         if isNaNLike || bitPattern == Self.infinity.bitPattern {
             return self
         } else if bitPattern == Self.negativeInfinity.bitPattern {
@@ -430,7 +441,7 @@ extension MedFloatProtocol {
     }
 
 
-    public init?(exactly source: some BinaryInteger) { // swiftlint:disable:this missing_docs
+    public init?(exactly source: some BinaryInteger) {
         var mantissa = source
         var exponent: Exponent = 0
         while !Self.fitsMantissa(mantissa) {
@@ -458,34 +469,34 @@ extension MedFloatProtocol {
         return first & (UInt.max << (Self.mantissaBitWidth - 1)) == 0
     }
 
-    public static func + (lhs: Self, rhs: Self) -> Self { // swiftlint:disable:this missing_docs
+    public static func + (lhs: Self, rhs: Self) -> Self {
         // We are going the cheap route here! There, is way too much to check for otherwise.
         Self(lhs.double + rhs.double)
     }
 
-    public static func - (lhs: Self, rhs: Self) -> Self { // swiftlint:disable:this missing_docs
+    public static func - (lhs: Self, rhs: Self) -> Self {
         lhs + (-rhs)
     }
     
-    public static func * (lhs: Self, rhs: Self) -> Self { // swiftlint:disable:this missing_docs
+    public static func * (lhs: Self, rhs: Self) -> Self {
         // We are going the cheap route here! There, is way too much to check for otherwise.
         Self(lhs.double * rhs.double)
     }
 
     
-    public static func *= (lhs: inout Self, rhs: Self) { // swiftlint:disable:this missing_docs
+    public static func *= (lhs: inout Self, rhs: Self) {
         lhs = lhs * rhs
     }
     
     
-    public prefix static func - (operand: Self) -> Self { // swiftlint:disable:this missing_docs
+    public prefix static func - (operand: Self) -> Self {
         var operand = operand
         operand.negate()
         return operand
     }
 
     
-    public mutating func negate() { // swiftlint:disable:this missing_docs
+    public mutating func negate() {
         self = negated()
     }
     
@@ -513,7 +524,8 @@ extension MedFloatProtocol {
 
 // MARK: Custom{Debug}StringConvertible
 
-extension MedFloatProtocol {
+@available(iOS 26, macOS 26, macCatalyst 26, watchOS 26, visionOS 26, tvOS 26, *)
+extension MedFloat: CustomStringConvertible, CustomDebugStringConvertible {
     private var specialValueString: String? {
         if isNaN || isReserved0 {
             return "nan"
@@ -529,7 +541,7 @@ extension MedFloatProtocol {
         return nil
     }
 
-    public var description: String { // swiftlint:disable:this missing_docs
+    public var description: String {
         if let specialValueString {
             return specialValueString
         }
@@ -576,7 +588,7 @@ extension MedFloatProtocol {
         return description
     }
     
-    public var debugDescription: String { // swiftlint:disable:this missing_docs
+    public var debugDescription: String {
         specialValueString ?? "\(mantissa)e\(exponent)"
     }
 }
@@ -584,15 +596,16 @@ extension MedFloatProtocol {
 
 // MARK: PrimitiveByteCodable
 
-extension MedFloatProtocol {
-    public init?(from byteBuffer: inout ByteBuffer, endianness: Endianness) { // swiftlint:disable:this missing_docs
+@available(iOS 26, macOS 26, macCatalyst 26, watchOS 26, visionOS 26, tvOS 26, *)
+extension MedFloat: PrimitiveByteCodable {
+    public init?(from byteBuffer: inout ByteBuffer, endianness: Endianness) {
         guard let bitPattern = BitPattern(from: &byteBuffer, endianness: endianness) else {
             return nil
         }
         self.init(bitPattern: bitPattern)
     }
     
-    public func encode(to byteBuffer: inout ByteBuffer, endianness: Endianness) { // swiftlint:disable:this missing_docs
+    public func encode(to byteBuffer: inout ByteBuffer, endianness: Endianness) {
         bitPattern.encode(to: &byteBuffer, endianness: endianness)
     }
 }
@@ -600,18 +613,20 @@ extension MedFloatProtocol {
 
 // MARK: RawRepresentable
 
-extension MedFloatProtocol {
-    public var rawValue: BitPattern { // swiftlint:disable:this missing_docs
+@available(iOS 26, macOS 26, macCatalyst 26, watchOS 26, visionOS 26, tvOS 26, *)
+extension MedFloat: RawRepresentable {
+    public var rawValue: BitPattern {
         bitPattern
     }
 
-    public init(rawValue: BitPattern) { // swiftlint:disable:this missing_docs
+    public init(rawValue: BitPattern) {
         self.init(bitPattern: rawValue)
     }
 }
 
 
-extension MedFloatProtocol {
+@available(iOS 26, macOS 26, macCatalyst 26, watchOS 26, visionOS 26, tvOS 26, *)
+extension MedFloat {
     /// The minimum value the exponent may have.
     static var exponentMinValue: Exponent {
         if Self.exponentBitWidth == Exponent.bitWidth {
@@ -698,7 +713,7 @@ extension FixedWidthInteger {
 
 
 /// Helper protocol used for associating an `UnsignedInteger` type with its `SignedInteger` counterpart.
-/// This is required for us to be able to implement the `MedFloatProtocol`,
+/// This is required for us to be able to implement the `MedFloat`,
 /// and for the protocol to have access to the `init(bitPattern:)` initializers.
 public protocol _UnsignedInteger: UnsignedInteger { // swiftlint:disable:this type_name
     associatedtype _Signed: _SignedInteger where _Signed._Unsigned == Self // swiftlint:disable:this type_name
@@ -706,7 +721,7 @@ public protocol _UnsignedInteger: UnsignedInteger { // swiftlint:disable:this ty
 }
 
 /// Helper protocol used for associating a `SignedInteger` type with its `UnsignedInteger` counterpart.
-/// This is required for us to be able to implement the `MedFloatProtocol`,
+/// This is required for us to be able to implement the `MedFloat`,
 /// and for the protocol to have access to the `init(bitPattern:)` initializers.
 public protocol _SignedInteger: SignedInteger { // swiftlint:disable:this type_name
     associatedtype _Unsigned: _UnsignedInteger where _Unsigned._Signed == Self // swiftlint:disable:this type_name
@@ -734,5 +749,3 @@ extension Int32: _SignedInteger {
 extension UInt32: _UnsignedInteger {
     public typealias _Signed = Int32 // swiftlint:disable:this type_name
 }
-
-// swiftlint:enable file_length

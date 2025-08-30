@@ -6,8 +6,6 @@
 // SPDX-License-Identifier: MIT
 //
 
-// swiftlint:disable file_types_order
-
 import ByteCoding
 
 
@@ -19,20 +17,8 @@ import ByteCoding
 /// The value of the `MedFloat16` can be calculated using the the following formula, where `**` denotes exponentiation:
 ///
 ///     x.mantissa * (10 ** x.exponent)
-public struct MedFloat16: MedFloatProtocol {
-    public typealias BitPattern = UInt16
-    public typealias Exponent = Int8
-    public typealias Mantissa = Int16
-    
-    public static var exponentBitWidth: Int { 4 }
-    public static var mantissaBitWidth: Int { 12 }
-    
-    public let bitPattern: UInt16
-    
-    public init(bitPattern: UInt16) {
-        self.bitPattern = bitPattern
-    }
-}
+@available(iOS 26, macOS 26, macCatalyst 26, watchOS 26, visionOS 26, tvOS 26, *)
+public typealias MedFloat16 = MedFloat<UInt16, Int8, Int16, 4, 12>
 
 
 /// Medical 32-bit float representation using base 10.
@@ -43,19 +29,7 @@ public struct MedFloat16: MedFloatProtocol {
 /// The value of the `MedFloat32` can be calculated using the the following formula, where `**` denotes exponentiation:
 ///
 ///     x.mantissa * (10 ** x.exponent)
-public struct MedFloat32: MedFloatProtocol {
-    public typealias BitPattern = UInt32
-    public typealias Exponent = Int8
-    public typealias Mantissa = Int32
-    
-    public static var exponentBitWidth: Int { 8 }
-    public static var mantissaBitWidth: Int { 24 }
-    
-    public let bitPattern: UInt32
-    
-    public init(bitPattern: UInt32) {
-        self.bitPattern = bitPattern
-    }
-}
+@available(iOS 26, macOS 26, macCatalyst 26, watchOS 26, visionOS 26, tvOS 26, *)
+public typealias MedFloat32 = MedFloat<UInt32, Int8, Int32, 8, 24>
 
 // swiftlint:enable file_types_order

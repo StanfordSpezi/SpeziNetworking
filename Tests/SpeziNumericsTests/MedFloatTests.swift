@@ -6,6 +6,8 @@
 // SPDX-License-Identifier: MIT
 //
 
+// swiftlint:disable file_length generic_type_name
+
 import ByteCoding
 import ByteCodingTesting
 import Foundation
@@ -17,8 +19,12 @@ import Testing
 @Suite("MedFloat")
 struct MedFloatTests { // swiftlint:disable:this type_body_length
     @Test("Special Values")
+    @available(iOS 26, macOS 26, macCatalyst 26, watchOS 26, visionOS 26, tvOS 26, *)
     func testSpecialValues() {
-        func imp<MedFloat: MedFloatProtocol>(_: MedFloat.Type) {
+        func imp<BitPattern, Exponent, Mantissa, let exponentWidth: Int, let mantissaWidth: Int>(
+            _: MedFloat<BitPattern, Exponent, Mantissa, exponentWidth, mantissaWidth>.Type
+        ) {
+            typealias MedFloat = SpeziNumerics.MedFloat<BitPattern, Exponent, Mantissa, exponentWidth, mantissaWidth>
             #expect(MedFloat.nan.double.isNaN)
             #expect(MedFloat.nres.double.isNaN)
             #expect(MedFloat.reserved0.double.isNaN)
@@ -30,8 +36,12 @@ struct MedFloatTests { // swiftlint:disable:this type_body_length
     }
 
     @Test("Double Conversion")
+    @available(iOS 26, macOS 26, macCatalyst 26, watchOS 26, visionOS 26, tvOS 26, *)
     func testDoubleConversion() {
-        func imp<MedFloat: MedFloatProtocol>(_: MedFloat.Type) {
+        func imp<BitPattern, Exponent, Mantissa, let exponentWidth: Int, let mantissaWidth: Int>(
+            _: MedFloat<BitPattern, Exponent, Mantissa, exponentWidth, mantissaWidth>.Type
+        ) {
+            typealias MedFloat = SpeziNumerics.MedFloat<BitPattern, Exponent, Mantissa, exponentWidth, mantissaWidth>
             #expect(MedFloat(.nan).isNaN)
             #expect(MedFloat(.zero).isZero)
             #expect(MedFloat(.infinity) == .infinity)
@@ -62,6 +72,7 @@ struct MedFloatTests { // swiftlint:disable:this type_body_length
     }
 
     @Test("Basic Representations")
+    @available(iOS 26, macOS 26, macCatalyst 26, watchOS 26, visionOS 26, tvOS 26, *)
     func testBasicRepresentations() { // swiftlint:disable:this function_body_length
         do { // MedFloat16
             let largeFloat = MedFloat16(exponent: 3, mantissa: 123)
@@ -220,10 +231,13 @@ struct MedFloatTests { // swiftlint:disable:this type_body_length
 
 
     @Test("Hashable")
+    @available(iOS 26, macOS 26, macCatalyst 26, watchOS 26, visionOS 26, tvOS 26, *)
     func testHashable() {
-        func imp<MedFloat: MedFloatProtocol>(_: MedFloat.Type) {
+        func imp<BitPattern, Exponent, Mantissa, let exponentWidth: Int, let mantissaWidth: Int>(
+            _: MedFloat<BitPattern, Exponent, Mantissa, exponentWidth, mantissaWidth>.Type
+        ) {
+            typealias MedFloat = SpeziNumerics.MedFloat<BitPattern, Exponent, Mantissa, exponentWidth, mantissaWidth>
             var values: Set<MedFloat> = []
-            
             #expect(values.insert(.nan).inserted)
             #expect(values.insert(.nan).inserted)
             #expect(values.insert(.zero).inserted)
@@ -235,7 +249,6 @@ struct MedFloatTests { // swiftlint:disable:this type_body_length
             #expect(values.insert(.nres).inserted)
             #expect(values.insert(.reserved0).inserted)
             #expect(values.insert(.reserved0).inserted)
-
             // swiftlint:disable identical_operands
             #expect(MedFloat.nan.hashValue == MedFloat.nan.hashValue)
             #expect(MedFloat.nres.hashValue == MedFloat.nres.hashValue)
@@ -247,8 +260,12 @@ struct MedFloatTests { // swiftlint:disable:this type_body_length
     }
 
     @Test("Equality")
+    @available(iOS 26, macOS 26, macCatalyst 26, watchOS 26, visionOS 26, tvOS 26, *)
     func testEquality() {
-        func imp<MedFloat: MedFloatProtocol>(_: MedFloat.Type) {
+        func imp<BitPattern, Exponent, Mantissa, let exponentWidth: Int, let mantissaWidth: Int>(
+            _: MedFloat<BitPattern, Exponent, Mantissa, exponentWidth, mantissaWidth>.Type
+        ) {
+            typealias MedFloat = SpeziNumerics.MedFloat<BitPattern, Exponent, Mantissa, exponentWidth, mantissaWidth>
             #expect(MedFloat.nan != .nan)
             #expect(MedFloat.nan != .nres)
             #expect(MedFloat.nan != .infinity)
@@ -277,8 +294,12 @@ struct MedFloatTests { // swiftlint:disable:this type_body_length
     }
 
     @Test("Comparable")
+    @available(iOS 26, macOS 26, macCatalyst 26, watchOS 26, visionOS 26, tvOS 26, *)
     func testComparable() {
-        func imp<MedFloat: MedFloatProtocol>(_: MedFloat.Type) {
+        func imp<BitPattern, Exponent, Mantissa, let exponentWidth: Int, let mantissaWidth: Int>(
+            _: MedFloat<BitPattern, Exponent, Mantissa, exponentWidth, mantissaWidth>.Type
+        ) {
+            typealias MedFloat = SpeziNumerics.MedFloat<BitPattern, Exponent, Mantissa, exponentWidth, mantissaWidth>
             #expect(!(MedFloat.nan < .nan))
             #expect(!(MedFloat.nan < .nan))
             #expect(!(MedFloat.nan < .nres))
@@ -318,6 +339,7 @@ struct MedFloatTests { // swiftlint:disable:this type_body_length
     }
 
     @Test("Literal inits")
+    @available(iOS 26, macOS 26, macCatalyst 26, watchOS 26, visionOS 26, tvOS 26, *)
     func testLiteralInits() {
         #expect(MedFloat16(150000000000) == .infinity)
         #expect(MedFloat16(-150000000000) == .negativeInfinity)
@@ -325,13 +347,17 @@ struct MedFloatTests { // swiftlint:disable:this type_body_length
 
 
     @Test("Exactly Conversion")
+    @available(iOS 26, macOS 26, macCatalyst 26, watchOS 26, visionOS 26, tvOS 26, *)
     func testExactlyConversion() {
         #expect(MedFloat16(exactly: Int16.max) == nil)
         #expect(MedFloat16(exactly: UInt16.max) == nil)
         #expect(MedFloat32(exactly: Int16.max) != nil)
         #expect(MedFloat32(exactly: UInt16.max) != nil)
 
-        func imp<MedFloat: MedFloatProtocol>(_: MedFloat.Type) {
+        func imp<BitPattern, Exponent, Mantissa, let exponentWidth: Int, let mantissaWidth: Int>(
+            _: MedFloat<BitPattern, Exponent, Mantissa, exponentWidth, mantissaWidth>.Type
+        ) {
+            typealias MedFloat = SpeziNumerics.MedFloat<BitPattern, Exponent, Mantissa, exponentWidth, mantissaWidth>
             #expect(MedFloat(exactly: UInt8.max) == 255)
             #expect(MedFloat(exactly: Int8.max) == 127)
             #expect(MedFloat(exactly: 12400) == 12400)
@@ -346,8 +372,12 @@ struct MedFloatTests { // swiftlint:disable:this type_body_length
     }
 
     @Test("Addition")
+    @available(iOS 26, macOS 26, macCatalyst 26, watchOS 26, visionOS 26, tvOS 26, *)
     func testAddition() {
-        func imp<MedFloat: MedFloatProtocol>(_: MedFloat.Type) {
+        func imp<BitPattern, Exponent, Mantissa, let exponentWidth: Int, let mantissaWidth: Int>(
+            _: MedFloat<BitPattern, Exponent, Mantissa, exponentWidth, mantissaWidth>.Type
+        ) {
+            typealias MedFloat = SpeziNumerics.MedFloat<BitPattern, Exponent, Mantissa, exponentWidth, mantissaWidth>
             #expect((MedFloat.infinity + .negativeInfinity).isNaN)
             #expect((MedFloat.negativeInfinity + .infinity).isNaN)
             
@@ -386,8 +416,12 @@ struct MedFloatTests { // swiftlint:disable:this type_body_length
     }
 
     @Test("Negate")
+    @available(iOS 26, macOS 26, macCatalyst 26, watchOS 26, visionOS 26, tvOS 26, *)
     func testNegate() {
-        func imp<MedFloat: MedFloatProtocol>(_: MedFloat.Type) {
+        func imp<BitPattern, Exponent, Mantissa, let exponentWidth: Int, let mantissaWidth: Int>(
+            _: MedFloat<BitPattern, Exponent, Mantissa, exponentWidth, mantissaWidth>.Type
+        ) {
+            typealias MedFloat = SpeziNumerics.MedFloat<BitPattern, Exponent, Mantissa, exponentWidth, mantissaWidth>
             #expect(-MedFloat.negativeInfinity == .infinity)
             #expect(-MedFloat.infinity == .negativeInfinity)
             #expect((-MedFloat.nan).isNaN)
@@ -402,8 +436,12 @@ struct MedFloatTests { // swiftlint:disable:this type_body_length
     }
 
     @Test("Multiply")
+    @available(iOS 26, macOS 26, macCatalyst 26, watchOS 26, visionOS 26, tvOS 26, *)
     func testMultiply() {
-        func imp<MedFloat: MedFloatProtocol>(_: MedFloat.Type) {
+        func imp<BitPattern, Exponent, Mantissa, let exponentWidth: Int, let mantissaWidth: Int>(
+            _: MedFloat<BitPattern, Exponent, Mantissa, exponentWidth, mantissaWidth>.Type
+        ) {
+            typealias MedFloat = SpeziNumerics.MedFloat<BitPattern, Exponent, Mantissa, exponentWidth, mantissaWidth>
             var value: MedFloat = 2
             
             value *= 10
@@ -415,8 +453,12 @@ struct MedFloatTests { // swiftlint:disable:this type_body_length
     }
 
     @Test("Magnitude")
+    @available(iOS 26, macOS 26, macCatalyst 26, watchOS 26, visionOS 26, tvOS 26, *)
     func testMagnitude() {
-        func imp<MedFloat: MedFloatProtocol>(_: MedFloat.Type) {
+        func imp<BitPattern, Exponent, Mantissa, let exponentWidth: Int, let mantissaWidth: Int>(
+            _: MedFloat<BitPattern, Exponent, Mantissa, exponentWidth, mantissaWidth>.Type
+        ) {
+            typealias MedFloat = SpeziNumerics.MedFloat<BitPattern, Exponent, Mantissa, exponentWidth, mantissaWidth>
             #expect(MedFloat.nan.magnitude.isNaN)
             #expect(MedFloat.nres.magnitude.isNRes)
             #expect(MedFloat.reserved0.magnitude.isReserved0)
@@ -434,8 +476,12 @@ struct MedFloatTests { // swiftlint:disable:this type_body_length
     }
 
     @Test("ByteCodable")
+    @available(iOS 26, macOS 26, macCatalyst 26, watchOS 26, visionOS 26, tvOS 26, *)
     func testByteCoding() throws {
-        func imp<MedFloat: MedFloatProtocol>(_: MedFloat.Type) throws {
+        func imp<BitPattern, Exponent, Mantissa, let exponentWidth: Int, let mantissaWidth: Int>(
+            _: MedFloat<BitPattern, Exponent, Mantissa, exponentWidth, mantissaWidth>.Type
+        ) throws {
+            typealias MedFloat = SpeziNumerics.MedFloat<BitPattern, Exponent, Mantissa, exponentWidth, mantissaWidth>
             try testIdentity(from: MedFloat.infinity)
             try testIdentity(from: MedFloat.negativeInfinity)
             try testIdentity(from: MedFloat.zero)
@@ -455,8 +501,12 @@ struct MedFloatTests { // swiftlint:disable:this type_body_length
     }
 
     @Test("Codable")
+    @available(iOS 26, macOS 26, macCatalyst 26, watchOS 26, visionOS 26, tvOS 26, *)
     func testCodable() throws {
-        func imp<MedFloat: MedFloatProtocol>(_: MedFloat.Type) throws {
+        func imp<BitPattern, Exponent, Mantissa, let exponentWidth: Int, let mantissaWidth: Int>(
+            _: MedFloat<BitPattern, Exponent, Mantissa, exponentWidth, mantissaWidth>.Type
+        ) throws {
+            typealias MedFloat = SpeziNumerics.MedFloat<BitPattern, Exponent, Mantissa, exponentWidth, mantissaWidth>
             func testCodableReturningResult<T: Codable & Equatable>(from value: T) throws -> T {
                 let encoder = JSONEncoder()
                 let decoder = JSONDecoder()
